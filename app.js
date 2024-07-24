@@ -13,7 +13,8 @@ const app = express()
 // middleware
 app.use(express.json())
 
-
+// Router
+app.use("/api/auth", require("./src/routes/authRoute"))
 // Running Server
 const PORT = process.env.PORT || 5001
 app.listen(PORT, () => {
