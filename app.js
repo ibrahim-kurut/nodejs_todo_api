@@ -15,6 +15,8 @@ app.use(express.json())
 
 // Router
 app.use("/api/auth", require("./src/routes/authRoute"))
+app.use("/api/users", require("./src/routes/usersRoute"))
+
 // Running Server
 const PORT = process.env.PORT || 5001
 app.listen(PORT, () => {
