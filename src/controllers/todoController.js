@@ -21,7 +21,7 @@ module.exports.createTodoCtrl = asyncHandler(async (req, res) => {
         description: req.body.description,
         completed: req.body.completed,
         // It comes after the user log in to the system because he cannot create Todo if he does not make a login
-        user: req.user.id
+        user: req.user._id
     })
     // send response to client
     res.status(201).json(newTodo)
@@ -54,4 +54,26 @@ module.exports.getSingleTodo = asyncHandler(async (req, res) => {
         return res.status(404).json({ message: "todo not found" })
     }
     res.status(200).json(todo)
+})
+
+/**
+ * @desc delete Todo
+ * @route /api/todos/:id
+ * @method DELETE
+ * @access private (only user himself can delete this todo)
+ */
+module.exports.deleteTodoCtrl = asyncHandler(async (req, res) => {
+    const todo = await Todo.findById(req.params.id)
+    if (!todo) {
+        return res.status(404).json({ message: "todo not found" })
+    }
+    if (req.user._id === todo.user.toString()) {
+        await Todo.findByIdAndDelete(req.params.id)
+        res.status(200).json({ message: "todo deleted successfully" })
+    }
+    else {
+        return res.status(401).json({ message: "you are not authorized to delete this todo" })
+    }
+
+
 })
