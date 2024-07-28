@@ -40,9 +40,19 @@ function validateCreateTodo(obj) {
     })
     return schema.validate(obj);
 }
+// validation update todo
+function validateUpdateTodo(obj) {
+    const schema = Joi.object({
+        title: Joi.string().min(3).max(50).trim(),
+        description: Joi.string().min(10).trim(),
+        completed: Joi.boolean(),
+    })
+    return schema.validate(obj);
+}
 
 
 module.exports = {
     Todo,
-    validateCreateTodo
+    validateCreateTodo,
+    validateUpdateTodo
 }

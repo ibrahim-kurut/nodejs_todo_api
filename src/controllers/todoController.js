@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler")
-const { Todo, validateCreateTodo } = require("../models/TodoModel")
+const { Todo, validateCreateTodo, validateUpdateTodo } = require("../models/TodoModel")
 
 
 
@@ -76,4 +76,40 @@ module.exports.deleteTodoCtrl = asyncHandler(async (req, res) => {
     }
 
 
+})
+
+/**
+ * @desc update Todo
+ * @route /api/todos/:id
+ * @method PUT
+ * @access private (only user himself can update this todo)
+ */
+module.exports.updateTodoCrtl = asyncHandler(async (req, res) => {
+    // validation
+    const { error } = validateUpdateTodo(req.body)
+    if (error) {
+        return res.status(400).json({ message: error.details[0].message })
+    }
+    // get todo from DB and check if todo exist or no
+    const todo = await Todo.findById(req.params.id)
+    if (!todo) {
+        return res.status(404).json({ message: "todo not found" })
+    }
+    // check if this todo belong to logged in user
+    if (req.user._id !== todo.user.toString()) {
+        return res.status(401).json({ message: "you are not authorized to update this todo" })
+    }
+    // update todo
+    const updateTodo = await Todo.findByIdAndUpdate(req.params.id, {
+        $set: {
+            title: req.body.title,
+            description: req.body.description,
+            completed: req.body.completed
+        }
+    }, { new: true }).populate("user", ["-password"])
+    // send response to client
+    res.status(200).json({
+        message: "todo updated successfully",
+        updateTodo
+    })
 })
