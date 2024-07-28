@@ -23,7 +23,7 @@ const TodoSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
+        require: true
     },
 
 }, { timestamps: true })
