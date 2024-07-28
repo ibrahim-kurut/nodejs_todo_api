@@ -26,3 +26,13 @@ module.exports.getUserProfileCtrl = asyncHandler(async (req, res) => {
     }
     res.status(200).json(user)
 })
+
+module.exports.getUserProfileCtrl = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id).select("-password").populate("todos")
+    // chech if user not found
+    if (!user) {
+        return res.status(404).json({ message: "user not found" });
+    }
+    res.status(200).json(user)
+
+})

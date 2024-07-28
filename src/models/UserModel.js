@@ -29,7 +29,18 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-}, { timestamps: true })
+}, {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+
+})
+// give the todo that belong to this user when get the profile
+UserSchema.virtual('todos', {
+    ref: 'Todo',
+    localField: '_id',
+    foreignField: 'user'
+})
 
 
 UserSchema.methods.generate_auth_token = function () {
