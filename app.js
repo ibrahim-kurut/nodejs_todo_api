@@ -1,6 +1,7 @@
 const express = require("express")
 const dotenv = require("dotenv")
 const dbConnection = require("./src/config/db")
+const cors = require('cors');
 
 dotenv.config()
 
@@ -12,6 +13,11 @@ const app = express()
 
 // middleware
 app.use(express.json())
+
+// Cors middleware for allowing requests from any origin
+app.use(cors({
+    origin: "*",
+}));
 
 // Router
 app.use("/api/auth", require("./src/routes/authRoute"))
